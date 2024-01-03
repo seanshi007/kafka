@@ -19,6 +19,10 @@ package org.apache.kafka.connect.runtime.rest.resources;
 import io.swagger.v3.oas.annotations.Operation;
 import org.apache.kafka.connect.runtime.Herder;
 import org.apache.kafka.connect.runtime.rest.entities.ServerInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -29,6 +33,8 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class RootResource implements ConnectResource {
 
+    private static final Logger log = LoggerFactory.getLogger(RootResource.class);
+    private static final Marker user = MarkerFactory.getMarker("USER");
     private final Herder herder;
 
     public RootResource(Herder herder) {
@@ -44,6 +50,7 @@ public class RootResource implements ConnectResource {
     @Path("/")
     @Operation(summary = "Get details about this Connect worker and the id of the Kafka cluster it is connected to")
     public ServerInfo serverInfo() {
+        log.info(user, "user log from " + herder.kafkaClusterId());
         return new ServerInfo(herder.kafkaClusterId());
     }
 }
